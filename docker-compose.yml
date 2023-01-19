@@ -1,0 +1,41 @@
+version: '3.5'
+
+services:
+  lamp-apache:
+    container_name: lamp-apache
+    build:
+      context: ./docker
+    volumes:
+      - /media/depruebas/DATOS_100/wwwroot/2023/proyectos/php/:/var/www/html/php
+      - ./docker/config:/home/devuser/config/
+      - ./temp:/home/devuser/temp/
+
+    networks:
+      vpcbr:
+        ipv4_address: 172.21.0.3
+
+    depends_on:
+      - lamp-mysql
+
+  lamp-mysql:
+    container_name: lamp-mysql
+    image: mysql:8.0.26
+    ports:
+      - '3336:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - /home/depruebas/datos/mysql-data-8:/var/lib/mysql
+      - ./temp:/mnt
+    networks:
+      vpcbr:
+        ipv4_address: 172.21.0.2
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.21.0.0/16
+         gateway: 172.21.0.1
