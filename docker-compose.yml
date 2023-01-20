@@ -1,41 +1,80 @@
+# Version de docker-compose que utilizamos
 version: '3.5'
 
+# En la seccion de services definimos los containers que vamos a utilizar en este proyecto son dos
+# Un servidor Web con apache y php que crearemos a partir de un fichero Dockerfile llamado lamp-apache
+# Y un servidor de MySql desde ima imagen estandard  
 services:
   lamp-apache:
+
+     # Nombre que le damos al contenedor, sale en el campo NAME
     container_name: lamp-apache
+
+    # En build / context le decimos donde esta el Dockerfile que va a utilizar para crear la imagen 
+    # (si la imagen no la tenemos)
     build:
       context: ./docker
+
+    # Volumes, son las unidades de nuestro disco que vamos a mapear en el servidor lamp-apache
+    # Si os fijas los tres rutas que mapeo se corresponden a los tres directorios que se crean
+    # en el Dockerfile
     volumes:
       - /media/depruebas/DATOS_100/wwwroot/2023/proyectos/php/:/var/www/html/php
       - ./docker/config:/home/devuser/config/
       - ./temp:/home/devuser/temp/
 
+    # networks, esto es muy opciones porque yo le estoy fijando un IP siempre siendo la misma para 
+    # que los servidores de apache y MySql se vean entre si y se puedan conectar.
     networks:
-      vpcbr:
+      red_1:
         ipv4_address: 172.21.0.3
 
+    hostname: servidor_web
+
+    # dependencia del arranque del contenedor de MySql que lo arrancara primero
     depends_on:
       - lamp-mysql
 
+  # El siguiente contenedor que especificamos es el de MySql
   lamp-mysql:
+
+    # Nombre que le damos al contenedor, sale en el campo NAME
     container_name: lamp-mysql
+
+    # Imagen que utilizamos del repositorio una oficial de MySql, en este caso no utilizamos
+    # ningun Dockerfile
     image: mysql:8.0.26
+
+    # En el puerto que lo ponemos
     ports:
       - '3336:3306'
+
+    # Password del servidor de MySql user=root password=root
     environment:
       MYSQL_ROOT_PASSWORD: root
+
+    # Volumes, son las unidades de nuestro disco que mapeamos al servidor
+    # los datos de la base de datos mysql-data-8 que guardamos en nuestro ordenador para
+    # que cada vez que eliminemos y creemos el contenedor persistan los datos
+    # y temp y directorio temporar para transferir datos entre mi ordenador y el server
     volumes:
       - /home/depruebas/datos/mysql-data-8:/var/lib/mysql
       - ./temp:/mnt
+
+    # le damos una IP fija para tener siempre la misma y asi no tener que cambiar las conexiones
+    # cada vez que se crea el contenedor
     networks:
-      vpcbr:
+      red_1:
         ipv4_address: 172.21.0.2
+
+    # Ejecutamos el MySql al arrancar la maquina
     command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
 
+# En networks definimos el tipo de red que queremos para nuestros contendores.
 networks:
-  vpcbr:
+  red_1:
     driver: bridge
     ipam:
-     config:
-       - subnet: 172.21.0.0/16
-         gateway: 172.21.0.1
+      config:
+        - subnet: 172.21.0.0/16
+          gateway: 172.21.0.1
