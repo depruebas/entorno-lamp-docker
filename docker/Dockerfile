@@ -1,7 +1,6 @@
 # Utilizamos para crear el servidor de Ubuntu 22.04 una imagen oficial del repositorio de docker
 FROM ubuntu:22.04
 
-
 # Creamos un usuario para guardar los ficheros que podamos utilizar como configs
 RUN adduser --disabled-password --gecos '' devuser
 

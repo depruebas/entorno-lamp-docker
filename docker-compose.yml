@@ -18,6 +18,8 @@ services:
     # Volumes, son las unidades de nuestro disco que vamos a mapear en el servidor lamp-apache
     # Si os fijas los tres rutas que mapeo se corresponden a los tres directorios que se crean
     # en el Dockerfile
+    # Esta ruta (media/depruebas/DATOS_100/wwwroot/2023/proyectos/php/) es de mi pc, tenéis que
+    # cambiarla por la vuestra, donde tengáis o queráis poner las aplicaciones web
     volumes:
       - /media/depruebas/DATOS_100/wwwroot/2023/proyectos/php/:/var/www/html/php
       - ./docker/config:/home/devuser/config/
