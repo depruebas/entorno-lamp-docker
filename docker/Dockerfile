@@ -1,7 +1,8 @@
 # Utilizamos para crear el servidor de Ubuntu 22.04 una imagen oficial del repositorio de docker
 FROM ubuntu:22.04
 
-# Creamos un usuario para guardar los ficheros que podamos utilizar como configs
+# Creamos un usuario para tener un directorio (/home/devuser)  donde guardar los ficheros que podamos utilizar como configs
+# y directorios que queramos mapear desde nuestra maquina (por ejemplo temp)
 RUN adduser --disabled-password --gecos '' devuser
 
 # Establecemos la zona horaria y con el comado RUN creamos un enlace simbolico del fichero

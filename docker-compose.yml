@@ -25,8 +25,9 @@ services:
       - ./docker/config:/home/devuser/config/
       - ./temp:/home/devuser/temp/
 
-    # networks, esto es muy opciones porque yo le estoy fijando un IP siempre siendo la misma para 
+    # networks, esto es opcional ponerlo, y le asigno una IP fija a los contenedores para
     # que los servidores de apache y MySql se vean entre si y se puedan conectar.
+    # Si no se pone ip fija se asigna una variable por defecto
     networks:
       red_1:
         ipv4_address: 172.21.0.3
@@ -40,7 +41,7 @@ services:
   # El siguiente contenedor que especificamos es el de MySql
   lamp-mysql:
 
-    # Nombre que le damos al contenedor, sale en el campo NAME
+    # Nombre que le damos al contenedor, sale en el campo NAME cuando hacemos un docker ps
     container_name: lamp-mysql
 
     # Imagen que utilizamos del repositorio una oficial de MySql, en este caso no utilizamos
@@ -59,6 +60,7 @@ services:
     # los datos de la base de datos mysql-data-8 que guardamos en nuestro ordenador para
     # que cada vez que eliminemos y creemos el contenedor persistan los datos
     # y temp y directorio temporar para transferir datos entre mi ordenador y el server
+    # si este directorio no existe en tu local, lo crea.
     volumes:
       - /home/depruebas/datos/mysql-data-8:/var/lib/mysql
       - ./temp:/mnt
